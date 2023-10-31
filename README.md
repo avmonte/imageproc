@@ -14,7 +14,7 @@ python3 main.py [inputFileName] --[mode]
 ```
 both ```.png``` and ```.jpg``` files are supported
 
-In your the directory you will find an executable of the inputted Forth script and a folder with the raw files (object and assembly files)
+In your directory you will find an inverse of the inputted image
 
 
 ## Modes
