@@ -4,9 +4,6 @@ All code related to CS260: Image Processing, *American University of Armenia*, F
 
 Author: Gevorg Nersesian, gevorg_nersesian@edu.aua.am    
 
-Supervisor: Norayr Chilingaryan, nchilingaryan@aua.am
-
-
 ## Usage
 
 In a terminal window of a directory with your Forth file, type
