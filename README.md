@@ -20,5 +20,3 @@ In your the directory you will find an executable of the inputted Forth script a
 ## Modes
 
 ```inverse```: finds the color inverse
-
-As of 31/10
