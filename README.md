@@ -1,6 +1,6 @@
 # imageproc
 
-All code related to CS260: Image Processing course, *American University of Armenia*, Fall 2022 and in general to the field
+All code related to CS260: Image Processing course, *American University of Armenia*, Fall 2023 and in general to the field
 
 Author: Gevorg Nersesian, gevorg_nersesian@edu.aua.am    
 
