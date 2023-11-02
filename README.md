@@ -12,7 +12,7 @@ In a terminal window of a directory with your image file, type
 python3 main.py [inputFileName] --[mode]
 
 ```
-both ```.png``` and ```.jpg``` files are supported
+both *.png* and *.jpg* files are supported
 
 In your directory you will find an inverse of the inputted image
 
