@@ -48,7 +48,7 @@ def blur():
 	for i in range(height):
 		for j in range(width):
 
-			summ = [0, 0, 0]
+			summ = [0] * channels
 			count = 0
 			for k in range(i - 1, i + 2):
 				for m in range(j - 1, j + 2):
