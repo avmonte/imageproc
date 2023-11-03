@@ -20,4 +20,5 @@ In your directory you will find an inverse of the inputted image
 ## Modes
 
 ```inverse```: finds the color inverse
+
 ```blur```: applies basic blur
