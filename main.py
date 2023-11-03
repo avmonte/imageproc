@@ -28,7 +28,7 @@ def inverse():
 	cv2.imwrite(f"inverse_{path.split('/')[-1]}", image)
 
 
-def blur():
+def blur(kernel=(lambda x, y: 1 / 25)):
 	"""
 	Our kernel values are uniform => no need for a variable to store those in.
 	Just as we do not rotate it 180 degrees since per mathematical definition, uniform => symmetric.
@@ -49,20 +49,31 @@ def blur():
 		for j in range(width):
 
 			summ = [0] * channels
-			count = 0
-			for k in range(i - 1, i + 2):
-				for m in range(j - 1, j + 2):
+			for k in range(i - 2, i + 3):
+				for m in range(j - 2, j + 3):
 					if 0 <= k < height and 0 <= m < width:
-						summ += image[k, m]
-						count += 1
+						summ += image[k, m] * kernel(i - k, j - m)
 
-			blured_img[i, j] = summ / count  ##
+			blured_img[i, j] = summ
 
 	# Save
 	cv2.imwrite(f"blured_{path.split('/')[-1]}", blured_img)
 
 
-if mode == "--inverse":
-	inverse()
-elif mode == "--blur":
-	blur()
+def gaussian_blur(stdev):
+	gaussian = lambda x, y: (np.exp(-(x ** 2 + y ** 2) / (2 * (stdev ** 2) )) / (2 * np.pi * (stdev ** 2)))
+	blur(gaussian)
+
+
+def main():
+	if mode == "--inverse":
+		inverse()
+	elif mode == "--boxblur":
+		blur()
+	elif mode == "--gaussianblur":
+		parameter = 1
+		if len(sys.argv) == 4:
+			parameter = int(sys.argv[3])
+		gaussian_blur(parameter)
+
+main()
