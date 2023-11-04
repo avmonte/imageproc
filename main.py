@@ -1,7 +1,8 @@
 import cv2
-import numpy as np
 from sys import argv
 from time import time, process_time
+
+from kernels import *
 
 # Timing
 start = time()
@@ -10,17 +11,8 @@ cpu_start = process_time()
 # Read
 path = argv[1]
 mode = argv[2]
-img = cv2.imread(path, cv2.IMREAD_UNCHANGED) # cv2.IMREAD_UNCHANGED keeps the alpha channel, instead of removing it
+img = cv2.imread(path, cv2.IMREAD_UNCHANGED)  # cv2.IMREAD_UNCHANGED keeps the alpha channel, instead of removing it
 height, width, channels = img.shape
-
-
-class Kernel:
-	#check the two props
-
-	def __init__(self, matrix):
-		self.matrix = matrix
-		self.size = matrix.shape[0] // 2
-		self.coef = 1 / np.sum(matrix) if np.sum(matrix) != 0 else 1
 
 
 def convolve(image, kernel: Kernel):
@@ -61,33 +53,15 @@ def inverse():
 
 
 def blur():
-	r = np.full((3, 3), 1)
-	a = Kernel(r)
+	arr = Kernel(np.full((3, 3), 1))
 
-	im = convolve(img, a)
+	im = convolve(img, arr)
 	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
 
 
-def generate_gaussian(stdev):
-	threshold = 0.95
-	gaussian = lambda x, y: (np.exp(-(x ** 2 + y ** 2) / (2 * (stdev ** 2))) / (2 * np.pi * (stdev ** 2)))
-	n = 3
-	arr = np.zeros(shape=(n, n, 1), dtype=np.float64)  # Using float16 for a faster computation
-
-	while np.sum(arr, dtype=np.float64) < threshold:
-		n += 2
-		arr = np.zeros(shape=(n, n, 1), dtype=np.float16)
-		for i in range(n):
-			for j in range(n):
-				arr[i, j] = gaussian(i - (n // 2), j - (n // 2))
-
-	print(np.sum(arr, dtype=np.float64), n)
-	return arr
-
-
 def gaussian_blur(stdev):
-	r = generate_gaussian(stdev)
-	a = Kernel(r)
+	a = Gaussian(stdev)
+	print(a)
 
 	im = convolve(img, a)
 	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
@@ -104,7 +78,7 @@ def edges():
 
 def grayscale():
 	im = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-	cv2.imwrite(f"grayscalled.png", im)
+	cv2.imwrite(f"grayscaled.png", im)
 
 
 def main():
