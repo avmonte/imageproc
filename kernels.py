@@ -26,7 +26,7 @@ class Gaussian(Kernel):
 		super().__init__(self.generate())
 
 	def generate(self):
-		threshold = 0.9999999999
+		threshold = 0.95
 		gaussian = lambda x, y: (np.exp(-(x ** 2 + y ** 2) / (2 * (self.stdev ** 2))) / (2 * np.pi * (self.stdev ** 2)))
 		n = 3
 		arr = np.zeros(shape=(n, n, 1), dtype=np.float64)
@@ -38,5 +38,5 @@ class Gaussian(Kernel):
 				for j in range(n):
 					arr[i, j] = gaussian(i - (n // 2), j - (n // 2))
 
-		# print(np.sum(arr, dtype=np.float64), n)
+		print(np.sum(arr, dtype=np.float64), n)
 		return arr

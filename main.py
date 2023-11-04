@@ -62,10 +62,10 @@ def blur():
 
 def gaussian_blur(stdev):
 	a = Gaussian(stdev)
-	# tools.vis(a.matrix)
+	tools.vis(a.matrix)
 
-	im = convolve(img, a)
-	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
+	# im = convolve(img, a)
+	# cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
 
 
 def edges():

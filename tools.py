@@ -14,6 +14,5 @@ def vis(matrix):  # for visualize
 				im[i, j] = [0, 0, abs(im[i, j][1])]
 
 			im[i, j] = im[i, j] * (255 / np.max(matrix))
-			print(im[i, j])
 
 	cv2.imwrite(f"vis_{time()}.png", im)
