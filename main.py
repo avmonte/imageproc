@@ -15,13 +15,12 @@ height, width, channels = img.shape
 
 
 class Kernel:
+	#check the two props
 
 	def __init__(self, matrix):
 		self.matrix = matrix
 		self.size = matrix.shape[0] // 2
 		self.coef = 1 / np.sum(matrix) if np.sum(matrix) != 0 else 1
-
-	#check the two props
 
 
 def convolve(image, kernel):
@@ -61,44 +60,40 @@ def inverse():
 	cv2.imwrite(f"inverse_{path.split('/')[-1]}", img)
 
 
-def blur(kernel=(lambda x, y: 1 / 25)):
-	"""
-	Our kernel values are uniform => no need for a variable to store those in.
-	Just as we do not rotate it 180 degrees since per mathematical definition, uniform => symmetric.
+def blur():
+	r = np.full((3, 3), 1)
+	a = Kernel(r)
 
-	In each step of the loop we are going to calculate the convolution of kernel and 3x3 region around (i, j)-th pixel
-	i.e.
+	im = convolve(img, a)
+	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
 
-		1/9 * image[i-1, j-1] + 1/9 * image[i-1, j] + ... + 1/9 * image[i, j] + ... + 1/9 * image[i+1, j+1]
-	<=>
-		1/9 * (image[i-1, j-1] + ... + image[i, j] + ... + image[i+1, j+1]),
 
-	which is implemented with nested loops below
-	"""
+def generate_gaussian(stdev):
+	threshold = 0.99999
+	gaussian = lambda x, y: (np.exp(-(x ** 2 + y ** 2) / (2 * (stdev ** 2))) / (2 * np.pi * (stdev ** 2)))
+	n = 3
+	arr = np.zeros(shape=(n, n, 1), dtype=np.float64)  # Using float16 for a faster computation
 
-	blured_img = np.zeros(shape=(height, width, channels), dtype=np.int16)
+	while np.sum(arr, dtype=np.float64) < threshold:
+		n += 2
+		arr = np.zeros(shape=(n, n, 1), dtype=np.float16)
+		for i in range(n):
+			for j in range(n):
+				arr[i, j] = gaussian(i - (n // 2), j - (n // 2))
 
-	for i in range(height):
-		for j in range(width):
-
-			summ = [0] * channels
-			for k in range(i - 2, i + 3):
-				for m in range(j - 2, j + 3):
-					if 0 <= k < height and 0 <= m < width:
-						summ += img[k, m] * kernel(i - k, j - m)
-
-			blured_img[i, j] = summ
-
-	# Save
-	cv2.imwrite(f"blured_{path.split('/')[-1]}", blured_img)
+	print(np.sum(arr, dtype=np.float64), n)
+	return arr
 
 
 def gaussian_blur(stdev):
-	gaussian = lambda x, y: (np.exp(-(x ** 2 + y ** 2) / (2 * (stdev ** 2) )) / (2 * np.pi * (stdev ** 2)))
-	blur(gaussian)
+	r = generate_gaussian(stdev)
+	a = Kernel(r)
+
+	im = convolve(img, a)
+	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
 
 
-def edges_test():
+def edges():
 	r = np.array([[-0.25, -0.5, -0.25], [0, 0, 0], [0.25, 0.5, 0.25]])
 	hor = Kernel(r)
 	ver = Kernel(r.transpose())
@@ -107,57 +102,28 @@ def edges_test():
 	cv2.imwrite(f"testFINAL.png", im)
 
 
-def edges():
-	edges_curr_img = np.zeros(shape=(height, width, channels), dtype=np.int16)
-	edges_img = None
-
-	kernel = np.array([[-0.25, -0.5, -0.25], [0, 0, 0], [0.25, 0.5, 0.25]])
-
-	for n in range(4):
-
-		for i in range(height):
-			for j in range(width):
-
-				summ = [0] * channels
-				for k in range(i - 1, i + 2):
-					for m in range(j - 1, j + 2):
-						if 0 <= k < height and 0 <= m < width:
-							summ += img[k, m] * kernel[i - k, j - m]
-
-				edges_curr_img[i, j] = summ
-
-		if n == 0:  # To avoid unnecessary computations
-			edges_img = edges_curr_img
-		else:
-			edges_img = np.sqrt(edges_img ** 2 + edges_curr_img ** 2)
-
-		kernel = np.rot90(kernel, n + 1)
-
-
-	# Save
-	cv2.imwrite(f"edges44_{path.split('/')[-1]}", edges_img)
-
 def grayscale():
 	im = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 	cv2.imwrite(f"grayscalled.png", im)
 
+
 def main():
-	if mode == "--inverse":
-		inverse()
-	if mode == "--grayscale":
+	if mode == "--grayscale" or mode == "--gray":
 		grayscale()
-	elif mode == "--boxblur":
+	elif mode == "--inverse":
+		inverse()
+	elif mode == "--edges":
+		edges()
+	elif mode == "--boxblur" or mode == "--blur":
 		blur()
-	elif mode == "--gaussianblur":
-		parameter = 1
+	elif mode == "--gaussianblur" or mode == "--gaussian":
+		parameter = 3
 		if len(argv) == 4:
 			parameter = int(argv[3])
 		gaussian_blur(parameter)
-	elif mode == "--edges":
-		edges_test()
+
 
 main()
-
 
 end = time()
 cpu_end = process_time()
