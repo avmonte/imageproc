@@ -1,13 +1,16 @@
 # imageproc
 
-<div style="text-align:center;">
+<div align="center">
     <img src="example/GaussianBlur27.jpg">
     </br>
-    <i>
-        27x Kernel Gaussian Blur computed with M1 MacBook Pro 2020 
-    </i>
+    <div align="center">
+        <em>
+            27x Kernel Gaussian Blur computed with M1 MacBook Pro 2020
+        </em>
+    </div>
 
 </div>
+</br>
 
 All code related to CS260: Image Processing course, *American University of Armenia*, Fall 2023 and in general to the field
 
