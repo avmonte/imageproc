@@ -1,5 +1,14 @@
 # imageproc
 
+<div style="text-align:center;">
+    <img src="example/GaussianBlur27.jpg">
+    </br>
+    <i>
+        27x Kernel Gaussian Blur computed with M1 MacBook Pro 2020 
+    </i>
+
+</div>
+
 All code related to CS260: Image Processing course, *American University of Armenia*, Fall 2023 and in general to the field
 
 Author: Gevorg Nersesian, gevorg_nersesian@edu.aua.am    
@@ -19,8 +28,12 @@ In your directory you will find an inverse of the inputted image
 
 ## Modes
 
-```inverse```: finds the color inverse
+`grayscale` `gray`: applies grayscale
 
-```boxblur```: applies box blur
+`inverse`: finds the color inverse
 
-```gaussianblur```: applies gaussian blur, takes in standard deviation as its parameter (1 by default)
+`boxblur` `blur`: applies box blur
+
+`gaussianblur` `gaussian`: applies gaussian blur, takes in standard deviation as its parameter (1 by default)
+
+`edges`: identifies the edges
