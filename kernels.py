@@ -38,5 +38,5 @@ class Gaussian(Kernel):
 				for j in range(n):
 					arr[i, j] = gaussian(i - (n // 2), j - (n // 2))
 
-		print(np.sum(arr, dtype=np.float64), n)
+		print(np.sum(arr, dtype=np.float64), n)  # for debug
 		return arr

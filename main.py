@@ -62,10 +62,10 @@ def blur():
 
 def gaussian_blur(stdev):
 	a = Gaussian(stdev)
-	tools.vis(a.matrix)
 
-	# im = convolve(img, a)
-	# cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
+	# tools.vis(a.matrix)
+	im = convolve(img, a)
+	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
 
 
 def edges():
@@ -73,9 +73,11 @@ def edges():
 	hor = Kernel(r)
 	ver = Kernel(r.transpose())
 
-	# im = np.sqrt(convolve(img, hor) ** 2 + convolve(img, ver) ** 2)
-	# cv2.imwrite(f"testFINAL.png", im)
-	tools.vis(r.transpose())
+	# tools.vis(r)
+	# tools.vis(r.transpose())
+	im = np.sqrt(convolve(img, hor) ** 2 + convolve(img, ver) ** 2)
+	cv2.imwrite(f"testFINAL.png", im)
+
 
 
 def grayscale():
