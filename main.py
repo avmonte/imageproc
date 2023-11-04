@@ -23,7 +23,7 @@ class Kernel:
 		self.coef = 1 / np.sum(matrix) if np.sum(matrix) != 0 else 1
 
 
-def convolve(image, kernel):
+def convolve(image, kernel: Kernel):
 	h, w, c = image.shape
 	final = np.zeros(shape=(h, w, c), dtype=np.int16)
 	s = kernel.size
@@ -69,7 +69,7 @@ def blur():
 
 
 def generate_gaussian(stdev):
-	threshold = 0.99999
+	threshold = 0.95
 	gaussian = lambda x, y: (np.exp(-(x ** 2 + y ** 2) / (2 * (stdev ** 2))) / (2 * np.pi * (stdev ** 2)))
 	n = 3
 	arr = np.zeros(shape=(n, n, 1), dtype=np.float64)  # Using float16 for a faster computation
@@ -117,7 +117,7 @@ def main():
 	elif mode == "--boxblur" or mode == "--blur":
 		blur()
 	elif mode == "--gaussianblur" or mode == "--gaussian":
-		parameter = 3
+		parameter = 1
 		if len(argv) == 4:
 			parameter = int(argv[3])
 		gaussian_blur(parameter)
