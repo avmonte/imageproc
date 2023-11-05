@@ -54,6 +54,9 @@ In your directory you will find an inverse of the inputted image
 
 ## Kernels
 
+Gaussian blur Kernels with different standard deviations
+
+Note: algorithm automatically resizes the matrix to fit at least 95% of the distribution
 <div align="center">
     <img src="kernel_visualization/infographics_kernel.png">
 </div>
