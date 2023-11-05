@@ -21,7 +21,7 @@ Author: Gevorg Nersesian, gevorg_nersesian@edu.aua.am
 In a terminal window of a directory with your image file, type
 ```bash
 
-python3 main.py [inputFileName] --[mode] [parameter_OPTIONAL]
+python3 code/main.py [inputFilePath] --[mode] [parameter_OPTIONAL]
 
 ```
 both *.png* and *.jpg* files are supported
