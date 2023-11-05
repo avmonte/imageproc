@@ -50,3 +50,10 @@ In your directory you will find an inverse of the inputted image
 `sharpen`: inverse of blurring
 
 - takes in initialization as its parameter (default = 4)
+
+
+## Kernels
+
+<div align="center">
+    <img src="kernel_visualization/infographics_kernel.png">
+</div>
