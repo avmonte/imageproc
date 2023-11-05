@@ -1,7 +1,7 @@
 import cv2
 from time import time
 
-import numpy as np
+from kernels import *
 
 
 def vis(matrix):  # for visualize
@@ -19,3 +19,21 @@ def vis(matrix):  # for visualize
 			np.max()
 
 	cv2.imwrite(f"vis_{time()}.png", im)
+
+
+def convolve(image, kernel: Kernel):
+	h, w, c = image.shape
+	final = np.zeros(shape=(h, w, c), dtype=np.int16)
+	s = kernel.size
+
+	for i in range(h):
+		for j in range(w):
+			total = np.array([0] * c)
+
+			for k in range(i - s, i + s + 1):
+				for m in range(j - s, j + s + 1):
+					total += np.round(image[np.clip(k, 0, h-1), np.clip(m, 0, w-1)] * kernel.matrix[s + k - i, s + m - j]).astype(int)
+
+			final[i, j] = abs(total * kernel.coef)
+
+	return final

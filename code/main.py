@@ -1,9 +1,7 @@
-import cv2
 from sys import argv
-from time import time, process_time
+from time import process_time
 
-from kernels import *
-import tools
+from tools import *
 
 # Timing
 start = time()
@@ -14,24 +12,6 @@ path = argv[1]
 mode = argv[2]
 img = cv2.imread(path, cv2.IMREAD_UNCHANGED)  # cv2.IMREAD_UNCHANGED keeps the alpha channel, instead of removing it
 height, width, channels = img.shape
-
-
-def convolve(image, kernel: Kernel):
-	h, w, c = image.shape
-	final = np.zeros(shape=(h, w, c), dtype=np.int16)
-	s = kernel.size
-
-	for i in range(h):
-		for j in range(w):
-			total = np.array([0] * c)
-
-			for k in range(i - s, i + s + 1):
-				for m in range(j - s, j + s + 1):
-					total += np.round(image[np.clip(k, 0, h-1), np.clip(m, 0, w-1)] * kernel.matrix[s + k - i, s + m - j]).astype(int)
-
-			final[i, j] = abs(total * kernel.coef)
-
-	return final
 
 
 def inverse():
