@@ -53,8 +53,8 @@ def inverse():
 	cv2.imwrite(f"inverse_{path.split('/')[-1]}", img)
 
 
-def blur():
-	arr = Kernel(np.full((3, 3), 1))
+def blur(init):
+	arr = Kernel(np.full((init, init), 1))
 
 	im = convolve(img, arr)
 	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
@@ -68,8 +68,8 @@ def gaussian_blur(stdev):
 	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
 
 
-def edges():
-	r = np.array([[-0.25, -0.5, -0.25], [0, 0, 0], [0.25, 0.5, 0.25]])
+def edges(init):
+	r = np.array([[-(init / 2), -init, -(init / 2)], [0, 0, 0], [init / 2, init, init / 2]])
 	hor = Kernel(r)
 	ver = Kernel(r.transpose())
 
@@ -79,10 +79,17 @@ def edges():
 	cv2.imwrite(f"testFINAL.png", im)
 
 
-
 def grayscale():
 	im = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 	cv2.imwrite(f"grayscaled.png", im)
+
+
+def sharpen(init):
+	r = np.array([[0, -(init / 4), 0], [-(init / 4), init + 1, -(init / 4)], [0, -(init / 4), 0]])
+	a = Kernel(r)
+
+	im = convolve(img, a)
+	cv2.imwrite(f"sharpened.png", im)
 
 
 def main():
@@ -91,14 +98,25 @@ def main():
 	elif mode == "--inverse":
 		inverse()
 	elif mode == "--edges":
-		edges()
+		parameter = 0.5
+		if len(argv) == 4:
+			parameter = int(argv[3])
+		edges(parameter)
 	elif mode == "--boxblur" or mode == "--blur":
-		blur()
+		parameter = 3
+		if len(argv) == 4:
+			parameter = int(argv[3])
+		blur(parameter)
 	elif mode == "--gaussianblur" or mode == "--gaussian":
 		parameter = 1
 		if len(argv) == 4:
 			parameter = int(argv[3])
 		gaussian_blur(parameter)
+	elif mode == "--sharpen":
+		parameter = 4
+		if len(argv) == 4:
+			parameter = int(argv[3])
+		sharpen(parameter)
 
 
 main()

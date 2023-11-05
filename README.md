@@ -37,6 +37,16 @@ In your directory you will find an inverse of the inputted image
 
 `boxblur` `blur`: applies box blur
 
-`gaussianblur` `gaussian`: applies gaussian blur, takes in standard deviation as its parameter (1 by default)
+- takes in initialization as its parameter (default = 3)
+
+`gaussianblur` `gaussian`: applies gaussian blur
+
+- takes in standard deviation as its parameter (default = 1)
 
 `edges`: identifies the edges
+
+- takes in initialization as its parameter (default = 0.5)
+
+`sharpen`: inverse of blurring
+
+- takes in initialization as its parameter (default = 4)
