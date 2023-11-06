@@ -16,6 +16,8 @@ Diverse algorithms implementing mathematical concepts of the Image Processing fi
 
 Author: Gevorg Nersesian, unstoppablehay@gmail.com
 
+License: see above
+
 ## Usage
 
 In a terminal window of a directory with your image file, type
