@@ -19,6 +19,20 @@ class Kernel:
 		return this
 
 
+class EdgeKernel(Kernel):
+	def __init__(self, init, horizontal=True):
+		self.init = init
+		self.horizontal = horizontal
+		super().__init__(self.generate())
+
+	def generate(self):
+		arr = np.array([[-(self.init / 2), -self.init, -(self.init / 2)], [0, 0, 0], [self.init / 2, self.init, self.init / 2]])
+		if self.horizontal:
+			return arr
+		else:
+			return arr.transpose()
+
+
 class Gaussian(Kernel):
 
 	def __init__(self, stdev):

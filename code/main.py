@@ -11,7 +11,10 @@ cpu_start = process_time()
 path = argv[1]
 mode = argv[2]
 img = cv2.imread(path, cv2.IMREAD_UNCHANGED)  # cv2.IMREAD_UNCHANGED keeps the alpha channel, instead of removing it
-height, width, channels = img.shape
+try:
+	height, width, channels = img.shape
+except ValueError:
+	height, width, channels = img.shape + tuple([1])
 
 
 def inverse():
@@ -41,21 +44,12 @@ def blur(init):
 
 
 def gaussian_blur(stdev):
-	a = Gaussian(stdev)
-
-	# tools.vis(a.matrix)
-	im = convolve(img, a)
+	im = convolve(img, Gaussian(stdev))
 	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
 
 
 def edges(init):
-	r = np.array([[-(init / 2), -init, -(init / 2)], [0, 0, 0], [init / 2, init, init / 2]])
-	hor = Kernel(r)
-	ver = Kernel(r.transpose())
-
-	# tools.vis(r)
-	# tools.vis(r.transpose())
-	im = np.sqrt(convolve(img, hor) ** 2 + convolve(img, ver) ** 2)
+	im = np.sqrt(convolve(img, EdgeKernel(init)) ** 2 + convolve(img, EdgeKernel(init, False)) ** 2)
 	cv2.imwrite(f"testFINAL.png", im)
 
 
@@ -80,17 +74,17 @@ def main():
 	elif mode == "--edges":
 		parameter = 0.5
 		if len(argv) == 4:
-			parameter = int(argv[3])
+			parameter = float(argv[3])
 		edges(parameter)
 	elif mode == "--boxblur" or mode == "--blur":
 		parameter = 3
 		if len(argv) == 4:
-			parameter = int(argv[3])
+			parameter = float(argv[3])
 		blur(parameter)
 	elif mode == "--gaussianblur" or mode == "--gaussian":
 		parameter = 1
 		if len(argv) == 4:
-			parameter = int(argv[3])
+			parameter = float(argv[3])
 		gaussian_blur(parameter)
 	elif mode == "--sharpen":
 		parameter = 4
@@ -104,4 +98,4 @@ main()
 end = time()
 cpu_end = process_time()
 
-print(f"Wall-Clock: {end - start}\nCPU: {cpu_end - cpu_start}")
+print(f"\n-----------------------\nWall-Clock: {(end - start):.5f}\nCPU: {(cpu_end - cpu_start):.5f}\n-----------------------\n")

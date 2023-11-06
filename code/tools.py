@@ -22,7 +22,11 @@ def vis(matrix):  # for visualize
 
 
 def convolve(image, kernel: Kernel):
-	h, w, c = image.shape
+	try:
+		h, w, c = image.shape
+	except ValueError:
+		h, w, c = image.shape + tuple([1])
+
 	final = np.zeros(shape=(h, w, c), dtype=np.int16)
 	s = kernel.size
 

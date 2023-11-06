@@ -35,6 +35,9 @@ In your directory you will find an inverse of the inputted image
 
 `inverse`: finds the color inverse
 
+
+#### Convolution based
+
 `boxblur` `blur`: applies box blur
 
 - takes in initialization as its parameter (default = 3)
