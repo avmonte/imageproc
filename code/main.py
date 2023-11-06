@@ -10,6 +10,11 @@ cpu_start = process_time()
 # Read
 path = argv[1]
 mode = argv[2]
+try:
+	parameter = argv[3]
+except IndexError:
+	parameter = None
+
 img = cv2.imread(path, cv2.IMREAD_UNCHANGED)  # cv2.IMREAD_UNCHANGED keeps the alpha channel, instead of removing it
 try:
 	height, width, channels = img.shape
@@ -38,10 +43,10 @@ def inverse():
 
 def blur(init):
 	arr = Kernel(np.full((init, init), 1))
-	vis(arr.matrix)
+	# vis(arr.matrix)
 
-	# im = convolve(img, arr)
-	# cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
+	im = convolve(img, arr)
+	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
 
 
 def gaussian_blur(stdev):
@@ -50,10 +55,11 @@ def gaussian_blur(stdev):
 
 
 def edges(init):
-	vis(EdgeKernel(init).matrix)
-	vis(EdgeKernel(init, False).matrix)
-	# im = np.sqrt(convolve(img, EdgeKernel(init)) ** 2 + convolve(img, EdgeKernel(init, False)) ** 2)
-	# cv2.imwrite(f"testFINAL.png", im)
+	# vis(EdgeKernel(init).matrix)
+	# vis(EdgeKernel(init, False).matrix)
+
+	im = np.sqrt(convolve(img, EdgeKernel(init)) ** 2 + convolve(img, EdgeKernel(init, False)) ** 2)
+	cv2.imwrite(f"testFINAL.png", im)
 
 
 def grayscale():
@@ -64,38 +70,35 @@ def grayscale():
 def sharpen(init):
 	r = np.array([[0, -(init / 4), 0], [-(init / 4), init + 1, -(init / 4)], [0, -(init / 4), 0]])
 	a = Kernel(r)
-	vis(a.matrix)
+	# vis(a.matrix)
 
-	# im = convolve(img, a)
-	# cv2.imwrite(f"sharpened.png", im)
+	im = convolve(img, a)
+	cv2.imwrite(f"sharpened.png", im)
+
+
+def motion_test():
+	cv2.imwrite(f"motion_tested.png", convolve(img, Kernel(np.array([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [2, 1, 0, -1, -2], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]))))
 
 
 def main():
-	if mode == "--grayscale" or mode == "--gray":
-		grayscale()
-	elif mode == "--inverse":
-		inverse()
-	elif mode == "--edges":
-		parameter = 0.5
-		if len(argv) == 4:
-			parameter = float(argv[3])
-		edges(parameter)
-	elif mode == "--boxblur" or mode == "--blur":
-		parameter = 3
-		if len(argv) == 4:
-			parameter = float(argv[3])
-		blur(parameter)
-	elif mode == "--gaussianblur" or mode == "--gaussian":
-		parameter = 1
-		if len(argv) == 4:
-			parameter = float(argv[3])
-		gaussian_blur(parameter)
-	elif mode == "--sharpen":
-		parameter = 4
-		if len(argv) == 4:
-			parameter = int(argv[3])
-		sharpen(parameter)
-
+	global parameter
+	match mode[2:]:
+		case "grayscale" | "gray":
+			grayscale()
+		case "inverse":
+			inverse()
+		case "edges":
+			edges(float(parameter) if parameter is not None else 0.5)
+		case "boxblur" | "blur":
+			blur(float(parameter) if parameter is not None else 3)
+		case "gaussianblur" | "gaussian":
+			gaussian_blur(float(parameter) if parameter is not None else 1)
+		case "sharpen":
+			sharpen(float(parameter) if parameter is not None else 4)
+		case "t":
+			motion_test()
+		case _:
+			print("Invalid Mode")
 
 main()
 
