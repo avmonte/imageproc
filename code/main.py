@@ -3,7 +3,7 @@ from time import process_time
 
 from tools import *
 
-# Timing
+# Time
 start = time()
 cpu_start = process_time()
 
@@ -15,6 +15,7 @@ try:
 except IndexError:
 	parameter = None
 
+# Load
 img = cv2.imread(path, cv2.IMREAD_UNCHANGED)  # cv2.IMREAD_UNCHANGED keeps the alpha channel, instead of removing it
 try:
 	height, width, channels = img.shape
@@ -38,71 +39,38 @@ def inverse():
 				img[i, j][k] = 2 * avg_color[k] - img[i, j][k]
 
 	# Save
-	cv2.imwrite(f"inverse_{path.split('/')[-1]}", img)
+	return img
 
 
-def blur(init):
-	arr = Kernel(np.full((init, init), 1))
-	# vis(arr.matrix)
-
-	im = convolve(img, arr)
-	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
-
-
-def gaussian_blur(stdev):
-	im = convolve(img, Gaussian(stdev))
-	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
-
-
-def edges(init):
-	# vis(EdgeKernel(init).matrix)
-	# vis(EdgeKernel(init, False).matrix)
-
-	im = np.sqrt(convolve(img, EdgeKernel(init)) ** 2 + convolve(img, EdgeKernel(init, False)) ** 2)
-	cv2.imwrite(f"testFINAL.png", im)
-
-
-def grayscale():
-	im = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-	cv2.imwrite(f"grayscaled.png", im)
-
-
-def sharpen(init):
-	r = np.array([[0, -(init / 4), 0], [-(init / 4), init + 1, -(init / 4)], [0, -(init / 4), 0]])
-	a = Kernel(r)
-	# vis(a.matrix)
-
-	im = convolve(img, a)
-	cv2.imwrite(f"sharpened.png", im)
-
-
-def motion_test():
-	cv2.imwrite(f"motion_tested.png", convolve(img, Kernel(np.array([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [2, 1, 0, -1, -2], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]))))
+def test():
+	return convolve(img, Kernel(np.array([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [2, 1, 0, -1, -2], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]])))
 
 
 def main():
 	global parameter
+	param = lambda x: float(parameter) if parameter is not None else x
 	match mode[2:]:
 		case "grayscale" | "gray":
-			grayscale()
+			p = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 		case "inverse":
-			inverse()
+			p = inverse()
 		case "edges":
-			edges(float(parameter) if parameter is not None else 0.5)
+			p = np.sqrt(convolve(img, Edge(param(0.5))) ** 2 + convolve(img, Edge(param(0.5), False)) ** 2)
 		case "boxblur" | "blur":
-			blur(float(parameter) if parameter is not None else 3)
+			p = convolve(img, Box(param(3)))
 		case "gaussianblur" | "gaussian":
-			gaussian_blur(float(parameter) if parameter is not None else 1)
+			p = convolve(img, Gaussian(float(parameter) if parameter is not None else 1))
 		case "sharpen":
-			sharpen(float(parameter) if parameter is not None else 4)
+			p = convolve(img, Sharpen(param(4)))
 		case "t":
-			motion_test()
+			p = test()
 		case _:
 			print("Invalid Mode")
+			return
+
+	cv2.imwrite(f"{mode[2:]}_{path.split('/')[-1]}", p)
 
 main()
 
-end = time()
-cpu_end = process_time()
-
-print(f"\n-----------------------\nWall-Clock: {(end - start):.5f}\nCPU: {(cpu_end - cpu_start):.5f}\n-----------------------\n")
+# Time Stats
+print(f"\n{'-' * 23}\nWall-Clock: {(time() - start):.5f}\nCPU: {(process_time() - cpu_start):.5f}\n{'-' * 23}\n")

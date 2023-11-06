@@ -19,7 +19,25 @@ class Kernel:
 		return this
 
 
-class EdgeKernel(Kernel):
+class Box(Kernel):
+	def __init__(self, init):
+		self.init = init
+		super().__init__(self.generate())
+
+	def generate(self):
+		return np.full((self.init, self.init), 1)
+
+
+class Sharpen(Kernel):
+	def __init__(self, init):
+		self.init = init
+		super().__init__(self.generate())
+
+	def generate(self):
+		return np.array([[0, -(self.init / 4), 0], [-(self.init / 4), self.init + 1, -(self.init / 4)], [0, -(self.init / 4), 0]])
+
+
+class Edge(Kernel):
 	def __init__(self, init, horizontal=True):
 		self.init = init
 		self.horizontal = horizontal
@@ -27,10 +45,8 @@ class EdgeKernel(Kernel):
 
 	def generate(self):
 		arr = np.array([[-(self.init / 2), -self.init, -(self.init / 2)], [0, 0, 0], [self.init / 2, self.init, self.init / 2]])
-		if self.horizontal:
-			return arr
-		else:
-			return arr.transpose()
+
+		return arr if self.horizontal else arr.transpose()
 
 
 class Gaussian(Kernel):
