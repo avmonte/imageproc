@@ -5,7 +5,7 @@
     </br>
     <div align="center">
         <em>
-            27x Kernel Gaussian Blur computed with M1 MacBook Pro 2020
+             Maximal Threshold Gaussian Blur computed with M1 MacBook Pro 2020
         </em>
     </div>
 
@@ -15,6 +15,8 @@
 Diverse algorithms implementing mathematical concepts of the Image Processing field.
 
 Author: Gevorg Nersesian, unstoppablehay@gmail.com
+
+License: see above
 
 ## Usage
 
