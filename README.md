@@ -1,7 +1,7 @@
 # imageproc
 
 <div align="center">
-    <img src="example/GaussianBlur27.jpg">
+    <img src="processed/park/GaussianBlur27.jpg">
     </br>
     <div align="center">
         <em>
@@ -65,7 +65,7 @@ In your directory you will find an inverse of the inputted image
 
 #### Edge Detection, Sharpening, Box Blur
 <div align="center">
-    <img src="kernel_visualization/kernels_infograph.png">
+    <img src="processed/kernel_visualization/kernels_infograph.png">
 </div>
 <br>
 
@@ -73,5 +73,5 @@ In your directory you will find an inverse of the inputted image
 
 Note: algorithm automatically resizes the matrix to fit at least 95% of the distribution
 <div align="center">
-    <img src="kernel_visualization/infographics_kernel.png">
+    <img src="processed/kernel_visualization/infographics_kernel.png">
 </div>
