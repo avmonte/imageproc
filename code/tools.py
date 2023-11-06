@@ -5,18 +5,23 @@ from kernels import *
 
 
 def vis(matrix):  # for visualize
-	h, w, c = matrix.shape
+	try:
+		h, w, c = matrix.shape
+	except ValueError:
+		h, w, c = matrix.shape + tuple([1])
+
 	center = (h - 1) // 2
-	max_val = matrix[center, center]
+	# max_val = matrix[center, center]
+
 	im = cv2.merge([np.zeros(shape=(h, w, c), dtype=matrix.dtype), matrix, np.zeros(shape=(h, w, c), dtype=matrix.dtype)])
 
+	print(im)
 	for i in range(h):
 		for j in range(w):
 			if im[i, j][1] < 0:
 				im[i, j] = [0, 0, abs(im[i, j][1])]
 
-			im[i, j] = im[i, j] * (255 / max_val)
-			np.max()
+			im[i, j] = im[i, j] * (255 / np.max(matrix))
 
 	cv2.imwrite(f"vis_{time()}.png", im)
 

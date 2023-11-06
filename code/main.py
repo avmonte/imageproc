@@ -38,9 +38,10 @@ def inverse():
 
 def blur(init):
 	arr = Kernel(np.full((init, init), 1))
+	vis(arr.matrix)
 
-	im = convolve(img, arr)
-	cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
+	# im = convolve(img, arr)
+	# cv2.imwrite(f"blured_{path.split('/')[-1]}", im)
 
 
 def gaussian_blur(stdev):
@@ -49,8 +50,10 @@ def gaussian_blur(stdev):
 
 
 def edges(init):
-	im = np.sqrt(convolve(img, EdgeKernel(init)) ** 2 + convolve(img, EdgeKernel(init, False)) ** 2)
-	cv2.imwrite(f"testFINAL.png", im)
+	vis(EdgeKernel(init).matrix)
+	vis(EdgeKernel(init, False).matrix)
+	# im = np.sqrt(convolve(img, EdgeKernel(init)) ** 2 + convolve(img, EdgeKernel(init, False)) ** 2)
+	# cv2.imwrite(f"testFINAL.png", im)
 
 
 def grayscale():
@@ -61,9 +64,10 @@ def grayscale():
 def sharpen(init):
 	r = np.array([[0, -(init / 4), 0], [-(init / 4), init + 1, -(init / 4)], [0, -(init / 4), 0]])
 	a = Kernel(r)
+	vis(a.matrix)
 
-	im = convolve(img, a)
-	cv2.imwrite(f"sharpened.png", im)
+	# im = convolve(img, a)
+	# cv2.imwrite(f"sharpened.png", im)
 
 
 def main():

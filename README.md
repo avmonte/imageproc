@@ -10,7 +10,7 @@
     </div>
 
 </div>
-</br>
+<br>
 
 All code related to CS260: Image Processing course, *American University of Armenia*, Fall 2023 and in general to the field
 
@@ -57,7 +57,17 @@ In your directory you will find an inverse of the inputted image
 
 ## Kernels
 
-Gaussian blur Kernels with different standard deviations
+- <font color="red">Red</font> represents negative values
+- <font color="green">Green</font> represents positive values
+- <font color="black">Black</font> represents zero
+
+#### Edge Detection, Sharpening, Box Blur
+<div align="center">
+    <img src="kernel_visualization/kernels_infograph.png">
+</div>
+<br>
+
+#### Gaussian Blur
 
 Note: algorithm automatically resizes the matrix to fit at least 95% of the distribution
 <div align="center">
