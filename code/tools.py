@@ -5,23 +5,29 @@ from kernels import *
 
 
 def vis(matrix):  # for visualize
+	if isinstance(matrix, Kernel):
+		m = matrix.matrix
+	elif isinstance(matrix, np.ndarray):
+		m = matrix
+
 	try:
-		h, w, c = matrix.shape
+		h, w, c = m.shape
 	except ValueError:
-		h, w, c = matrix.shape + tuple([1])
+		h, w, c = m.shape + tuple([1])
 
-	center = (h - 1) // 2
-	# max_val = matrix[center, center]
+	if isinstance(matrix, Gaussian):
+		max_val = m[(h - 1) // 2, (h - 1) // 2]
+	else:
+		max_val = np.max(m)
 
-	im = cv2.merge([np.zeros(shape=(h, w, c), dtype=matrix.dtype), matrix, np.zeros(shape=(h, w, c), dtype=matrix.dtype)])
+	im = cv2.merge([np.zeros(shape=(h, w, c), dtype=m.dtype), m, np.zeros(shape=(h, w, c), dtype=m.dtype)])
 
-	print(im)
 	for i in range(h):
 		for j in range(w):
 			if im[i, j][1] < 0:
 				im[i, j] = [0, 0, abs(im[i, j][1])]
 
-			im[i, j] = im[i, j] * (255 / np.max(matrix))
+			im[i, j] = im[i, j] * (255 / max_val)
 
 	cv2.imwrite(f"vis_{time()}.png", im)
 
