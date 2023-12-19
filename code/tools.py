@@ -1,6 +1,8 @@
 import cv2
 from time import time
 
+import numpy as np
+
 from kernels import *
 
 
@@ -52,3 +54,26 @@ def convolve(image, kernel: Kernel):
 			final[i, j] = abs(total * kernel.coef)
 
 	return final
+
+
+def fastconv(image: np.ndarray, kernel: Kernel):
+
+	i_f = np.flip(image.flatten())
+	k_f = np.flip(kernel.matrix.flatten())
+
+	new_degree = len(i_f) + len(k_f) - 2
+
+	x = np.array([i for i in range(new_degree + 1)])
+	i_y = np.array([i_f[0]])
+	k_y = np.array([k_f[0]])
+
+	for i in x:
+		i_y = np.append(i_y, np.polyval(i_f, i))
+		k_y = np.append(k_y, np.polyval(k_f, i))
+
+	y = i_y * k_y
+	p_f = np.array(np.polyfit(x, y, new_degree))[:len(i_f)]
+
+	return p_f.reshape(i_f.shape)
+
+

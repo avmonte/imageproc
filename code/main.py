@@ -15,6 +15,11 @@ try:
 except IndexError:
 	parameter = None
 
+try:
+	name = argv[4]
+except IndexError:
+	name = None
+
 # Load
 img = cv2.imread(path, cv2.IMREAD_UNCHANGED)  # cv2.IMREAD_UNCHANGED keeps the alpha channel, instead of removing it
 try:
@@ -58,6 +63,7 @@ def main():
 			p = np.sqrt(convolve(img, Edge(param(0.5))) ** 2 + convolve(img, Edge(param(0.5), False)) ** 2)
 		case "boxblur" | "blur":
 			p = convolve(img, Box(param(3)))
+			# p = fastconv(img, Box(param(3)))
 		case "gaussianblur" | "gaussian":
 			p = convolve(img, Gaussian(float(parameter) if parameter is not None else 1))
 		case "sharpen":
@@ -68,7 +74,13 @@ def main():
 			print("Invalid Mode")
 			return
 
-	cv2.imwrite(f"{mode[2:]}_{path.split('/')[-1]}", p)
+	save_filename =  f"{mode[2:]}_{path.split('/')[-1]}"
+	if name is not None:
+		save_filename = name
+
+	cv2.imwrite(save_filename, p)
+
+
 
 main()
 
