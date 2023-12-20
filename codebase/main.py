@@ -1,7 +1,7 @@
 from sys import argv
 from time import process_time
 
-from tools import *
+from codebase.tools import *
 
 # Time
 start = time()
