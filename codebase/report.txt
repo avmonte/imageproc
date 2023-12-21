@@ -1,3 +1,0 @@
-
-Do initializers actually change anything?
-Optimize convolve() with FFT
