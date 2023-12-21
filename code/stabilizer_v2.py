@@ -38,7 +38,7 @@ class Kernel:
                     x, y = i - (n // 2), j - (n // 2)
                     arr[i, j] = gaussian(x, y)
 
-        print(np.sum(arr, dtype=np.float64), n)  # for debug
+        # print(np.sum(arr, dtype=np.float64), n)  # for debug
         return arr / np.sum(arr, dtype=np.float64)  # normalize
 
 
@@ -144,6 +144,7 @@ def iterate(image):
     if angle is None:
         blurred = cv2.GaussianBlur(image, (5, 5), 5)
         cv2.imwrite('blurred_edition.jpg', blurred)  # NOTE
+        print('Blurred')
     else:
         kernel = Kernel(3).generate(angle)
         blurred = cv2.filter2D(image, -1, kernel)
@@ -186,7 +187,7 @@ def iterate(image):
         cv2.imwrite('lines2.jpg', cimg)
 
         # average of theta values from Hough Transform
-        print(lines[:, 0][:, 1])
+        # print(lines[:, 0][:, 1])  # for debug
 
         theta_radians = find_most_frequent(lines[:, 0][:, 1], 0.05)
 
@@ -199,7 +200,7 @@ def iterate(image):
         print("Average Theta (degrees):", round(angle))
         if angle < 0:
             angle = 180 + angle
-        print("Error:", abs(round(actual_angle - angle, 2)))
+        print("Error:", abs(round(actual_angle - angle, 2)), '\n')
 
 
 def rotate(image):
@@ -216,19 +217,22 @@ def rotate(image):
 def main():
     global actual_angle
     # read image
-    filename = '114.jpg'
+    filename = '../examples/42.jpg'
     img = cv2.imread(filename)
-    actual_angle = int(filename.split('.')[0])
+    actual_angle = int((filename.split('.')[-2]).split('/')[-1])
 
     # img = remove_red_marks(img)
     img = convert_to_binary_and_save(img)
 
-    for i in range(2):
+    for i in range(4):
         iterate(img)
+        # print(angle) # for debug
+
     if angle is not None:
-        rotate(img)
+        img = rotate(cv2.imread(filename))
 
     # save image
-    cv2.imwrite(f'{actual_angle}p.jpg', img)
+    cv2.imwrite(f'../examples/{actual_angle}p.jpg', img)
 
 main()
+print('Done')
