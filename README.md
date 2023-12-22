@@ -86,7 +86,6 @@ Note: algorithm automatically resizes the matrix to fit at least 95% of the dist
 ### First Stage: Pre-Processing, Angle Approximation
 
 <div align="center">
-    <img src="examples/16.jpg" style="width:500px;">
     <img src="examples/16stages/binary_edition.jpg" style="width:500px;">
     <img src="examples/16stages/blurred_edition.jpg" style="width:500px;">
     <img src="examples/16stages/thresh.jpg" style="width:500px;">
