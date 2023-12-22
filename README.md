@@ -80,29 +80,29 @@ Note: algorithm automatically resizes the matrix to fit at least 95% of the dist
 
 ### Original
 <div align="center">
-    <img src="examples/16.jpg">
+    <img src="examples/16.jpg" style="width:500px;">
 </div>
 
 ### First Stage: Pre-Processing, Angle Approximation
 
 <div align="center">
-    <img src="examples/16.jpg">
-    <img src="examples/16stages/binary_edition.jpg">
-    <img src="examples/16stages/blurred_edition.jpg">
-    <img src="examples/16stages/thresh.jpg">
+    <img src="examples/16.jpg" style="width:500px;">
+    <img src="examples/16stages/binary_edition.jpg" style="width:500px;">
+    <img src="examples/16stages/blurred_edition.jpg" style="width:500px;">
+    <img src="examples/16stages/thresh.jpg" style="width:500px;">
 </div>
 
 ### Second Stage: Enhanced Processing and Angle Approximation
 
 <div align="center">
-    <img src="examples/16stages/blurred_edition2.jpg">
-    <img src="examples/16stages/thresh.jpg">
+    <img src="examples/16stages/blurred_edition2.jpg" style="width:500px;">
+    <img src="examples/16stages/thresh.jpg" style="width:500px;">
 </div>
 
 ### Final Result: Locate Lines, Find Angle and Rotate
 <div align="center">
-    <img src="examples/16stages/lines2.jpg">
-    <img src="examples/16p.jpg">
+    <img src="examples/16stages/lines2.jpg" style="width:500px;">
+    <img src="examples/16p.jpg" style="width:500px;">
 </div>
 
 Find additional examples in the `examples` folder (`16.jpg` is original, `16p.jpg` is processed)
