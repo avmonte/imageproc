@@ -96,7 +96,7 @@ Note: algorithm automatically resizes the matrix to fit at least 95% of the dist
 
 <div align="center">
     <img src="examples/16stages/blurred_edition2.jpg" style="width:500px;">
-    <img src="examples/16stages/thresh.jpg" style="width:500px;">
+    <img src="examples/16stages/thresh2.jpg" style="width:500px;">
 </div>
 
 ### Final Result: Locate Lines, Find Angle and Rotate
