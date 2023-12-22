@@ -1,6 +1,6 @@
 
 # from tools import vis
-from helper import find_most_frequent, skeletonize_image, convert_to_binary_and_save, remove_red_marks
+from helper import *
 import cv2
 import numpy as np
 
@@ -16,49 +16,81 @@ Rotate
 angle = None
 
 
-class Kernel:
-    def __init__(self, stdev):
-        self.stdev = stdev
-
-    def generate(self, alpha):
-        threshold = 0.97
-        alpha_rad = np.radians(alpha)  # Convert alpha to radians
-        a = np.cos(alpha_rad)
-        b = np.sin(alpha_rad)
-
-        amp = 1 / 100
-
-        gaussian = lambda x, y: amp * np.exp(-((a * x + b * y) ** 2) / (2 * self.stdev ** 2))
-        n = 7
-        arr = np.zeros(shape=(n, n, 1), dtype=np.float64)
-
-        while np.sum(arr, dtype=np.float64) < threshold:
-            n += 2
-            arr = np.zeros(shape=(n, n, 1), dtype=np.float64)
-            for i in range(n):
-                for j in range(n):
-                    x, y = i - (n // 2), j - (n // 2)
-                    m = gaussian(x, y)
-                    # print(m)
-                    arr[i, j] = m
-
-        # print(np.sum(arr, dtype=np.float64), n)  # for debug
-        return arr / np.sum(arr, dtype=np.float64)  # normalize
-
-
-def iterate(image):
+def enhanced_approx(image):
     ## Prism Gaussian Blur
     global angle
 
-    if angle is None:
-        blurred = cv2.GaussianBlur(image, (5, 5), 5)
-        cv2.imwrite('blurred_edition.jpg', blurred)  # NOTE
-        print('Blurred')
-    else:
-        print(angle)
-        kernel = Kernel(3).generate(angle)
-        # vis(kernel)  # for debug
-        blurred = cv2.filter2D(image, -1, kernel)
+    kernel = Kernel().generate_prism_gaussian(angle, 3)
+    dilate = Kernel().generate_DE(angle)
+
+    # # vis(kernel)  # for debug
+    # blurred = cv2.filter2D(image, -1, kernel)
+
+    ## Edge detection
+    im = cv2.erode(image, kernel, iterations=1)
+    im = cv2.filter2D(im, -1, kernel)
+    im = cv2.filter2D(im, -1, kernel)
+
+    cv2.imwrite('../examples/16 stages/blurred_edition2.jpg', im)  # NOTE
+
+    for i in range(20):
+        im = cv2.threshold(im, 127, 255, cv2.THRESH_BINARY)[1]
+        im = cv2.dilate(im, dilate, iterations=1)
+        im = cv2.erode(im, dilate, iterations=1)
+        im = cv2.filter2D(im, -1, kernel)
+        im = cv2.filter2D(im, -1, kernel)
+
+    im = cv2.filter2D(im, -1, kernel)
+    im = cv2.threshold(im, 127, 255, cv2.THRESH_BINARY)[1]
+    im = cv2.bitwise_not(im)
+    im = skeletonize_image(im)
+    im = cv2.dilate(im, dilate, iterations=1)
+    im = cv2.threshold(im, 127, 255, cv2.THRESH_BINARY)[1]
+
+    cv2.imwrite('../examples/16 stages/thresh2.jpg', im)
+
+    lines = cv2.HoughLines(im, 1, np.pi / 180, 200)
+
+    cimg = np.copy(image)  # EXAMPLE: T11
+    if lines is not None:
+        for rho, theta in lines[:, 0]:
+            a = np.cos(theta)
+            b = np.sin(theta)
+            x0 = a * rho
+            y0 = b * rho
+            x1 = int(x0 + 1000 * (-b))
+            y1 = int(y0 + 1000 * (a))
+            x2 = int(x0 - 1000 * (-b))
+            y2 = int(y0 - 1000 * (a))
+            cv2.line(cimg, (x1, y1), (x2, y2), (0, 0, 255), 2)
+
+        cv2.imwrite('../examples/16 stages/lines2.jpg', cimg)
+
+        # average of theta values from Hough Transform
+        # print(lines[:, 0][:, 1])  # for debug
+
+        theta_radians = find_most_frequent(lines[:, 0][:, 1], 0.05)
+
+        # Convert theta to degrees
+        theta_degrees = np.degrees(theta_radians)
+
+        # Calculate the angle of the line with the x-axis
+        angle = round(90 - theta_degrees, 3)
+
+        print("Average Theta (degrees):", round(angle))
+        if angle < 0:
+            angle = 180 + angle
+        print("Error:", abs(round(actual_angle - angle, 2)), '\n')
+
+
+def initial_approx(image):
+    ## Prism Gaussian Blur
+    global angle
+
+    blurred = cv2.GaussianBlur(image, (5, 5), 5)
+    cv2.imwrite('../examples/16 stages/blurred_edition.jpg', blurred)  # NOTE
+    print('Blurred')
+
 
     ## Edge detection
     thresh = cv2.Canny(blurred, 50, 150, apertureSize=3)
@@ -70,20 +102,15 @@ def iterate(image):
         # thresh = cv2.erode(thresh, np.ones((10, 10), np.uint8), iterations=5)
 
         _, thresh = cv2.threshold(thresh, 0, 255, cv2.THRESH_OTSU)
-        if angle is None:
-            thresh = cv2.GaussianBlur(thresh, (5, 5), 5)
-        else:
-            thresh = cv2.filter2D(thresh, -1, kernel)
+        thresh = cv2.GaussianBlur(thresh, (5, 5), 5)
 
         thresh = skeletonize_image(thresh)
-        if angle is None:
-            thresh = cv2.GaussianBlur(thresh, (5, 5), 5)
-        else:
-            thresh = cv2.filter2D(thresh, -1, kernel)
+
+        thresh = cv2.GaussianBlur(thresh, (5, 5), 5)
 
         _, thresh = cv2.threshold(thresh, 0, 255, cv2.THRESH_OTSU)
 
-        cv2.imwrite('thresh.jpg', thresh)
+        cv2.imwrite('../examples/16 stages/thresh.jpg', thresh)
         # Apply Hough Transform
         lines = cv2.HoughLines(thresh, 1, np.pi / 180, 200)
 
@@ -105,7 +132,7 @@ def iterate(image):
             y2 = int(y0 - 1000 * (a))
             cv2.line(cimg, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
-        cv2.imwrite('lines2.jpg', cimg)
+        cv2.imwrite('../examples/16 stages/lines2.jpg', cimg)
 
         # average of theta values from Hough Transform
         # print(lines[:, 0][:, 1])  # for debug
@@ -138,16 +165,15 @@ def rotate(image):
 def main():
     global actual_angle
     # read image
-    filename = '../examples/114.jpg'
+    filename = '../examples/16.jpg'
     img = cv2.imread(filename)
     actual_angle = int((filename.split('.')[-2]).split('/')[-1])
 
     # img = remove_red_marks(img)
     img = convert_to_binary_and_save(img)
 
-    for i in range(2):
-        iterate(img)
-        # print(angle) # for debug
+    initial_approx(img)
+    enhanced_approx(img)
 
     if angle is not None:
         img = rotate(cv2.imread(filename))

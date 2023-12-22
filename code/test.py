@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 
-from tools import vis
 from helper import skeletonize_image
 
 class Kernel:
@@ -34,8 +33,8 @@ class Kernel:
         return arr / np.sum(arr, dtype=np.float64)  # normalize
 
 
-def create_angle_kernel(size, angle_degrees):
-    angle_radians = np.deg2rad(angle_degrees)
+def create_angle_kernel(angle_degrees, size=5, thickness=1):
+    angle_radians = np.radians(180 - angle_degrees)
     kernel = np.zeros((size, size), dtype=np.uint8)
 
     # Assuming the line passes through the center of the kernel
@@ -46,41 +45,37 @@ def create_angle_kernel(size, angle_degrees):
             x = i - center
             y = j - center
             # Check if the point (x, y) lies close to the line with the given angle
-            if abs(y * np.cos(angle_radians) - x * np.sin(angle_radians)) < 1:
+            if abs(x * np.cos(angle_radians) - y * np.sin(angle_radians)) < thickness:
                 kernel[i, j] = 1
     return kernel
 
-# Example usage
-kernel = create_angle_kernel(5, 45)  # 5x5 kernel with a 45-degree line
-print(kernel)
 
-kernel = create_angle_kernel(5, 90)  # 5x5 kernel with a 90-degree line
-vis(kernel)
 
 im = cv2.imread('../examples/16.jpg')
-kernel = Kernel(3).generate(16)
+angle = 16
+kernel = Kernel(3).generate(angle)
+dilate = create_angle_kernel(angle)
 # im to binary
 im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 im = cv2.threshold(im, 127, 255, cv2.THRESH_BINARY)[1]
+
 
 im = cv2.erode(im, kernel, iterations=1)
 im = cv2.filter2D(im, -1, kernel)
 im = cv2.filter2D(im, -1, kernel)
 
-for i in range(5):
+for i in range(20):
     im = cv2.threshold(im, 127, 255, cv2.THRESH_BINARY)[1]
-    im = cv2.dilate(im, kernel, iterations=1)
-    im = cv2.erode(im, kernel, iterations=1)
+    im = cv2.dilate(im, dilate, iterations=1)
+    im = cv2.erode(im, dilate, iterations=1)
     im = cv2.filter2D(im, -1, kernel)
     im = cv2.filter2D(im, -1, kernel)
 
 im = cv2.filter2D(im, -1, kernel)
 im = cv2.threshold(im, 127, 255, cv2.THRESH_BINARY)[1]
-
 im = cv2.bitwise_not(im)
-# im = skeletonize_image(im)
-
-# print('skeletonized')
+im = skeletonize_image(im)
+im = cv2.dilate(im, dilate, iterations=1)
 im = cv2.threshold(im, 127, 255, cv2.THRESH_BINARY)[1]
 
 cv2.imwrite('../examples/gevorgsblurMEGA.jpg', im)
