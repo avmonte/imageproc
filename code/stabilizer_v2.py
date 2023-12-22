@@ -31,7 +31,7 @@ def enhanced_approx(image):
     im = cv2.filter2D(im, -1, kernel)
     im = cv2.filter2D(im, -1, kernel)
 
-    cv2.imwrite('../examples/16 stages/blurred_edition2.jpg', im)  # NOTE
+    cv2.imwrite('../examples/16stages/blurred_edition2.jpg', im)  # NOTE
 
     for i in range(20):
         im = cv2.threshold(im, 127, 255, cv2.THRESH_BINARY)[1]
@@ -47,7 +47,7 @@ def enhanced_approx(image):
     im = cv2.dilate(im, dilate, iterations=1)
     im = cv2.threshold(im, 127, 255, cv2.THRESH_BINARY)[1]
 
-    cv2.imwrite('../examples/16 stages/thresh2.jpg', im)
+    cv2.imwrite('../examples/16stages/thresh2.jpg', im)
 
     lines = cv2.HoughLines(im, 1, np.pi / 180, 200)
 
@@ -64,7 +64,7 @@ def enhanced_approx(image):
             y2 = int(y0 - 1000 * (a))
             cv2.line(cimg, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
-        cv2.imwrite('../examples/16 stages/lines2.jpg', cimg)
+        cv2.imwrite('../examples/16stages/lines2.jpg', cimg)
 
         # average of theta values from Hough Transform
         # print(lines[:, 0][:, 1])  # for debug
@@ -88,7 +88,7 @@ def initial_approx(image):
     global angle
 
     blurred = cv2.GaussianBlur(image, (5, 5), 5)
-    cv2.imwrite('../examples/16 stages/blurred_edition.jpg', blurred)  # NOTE
+    cv2.imwrite('../examples/16stages/blurred_edition.jpg', blurred)  # NOTE
     print('Blurred')
 
 
@@ -110,7 +110,7 @@ def initial_approx(image):
 
         _, thresh = cv2.threshold(thresh, 0, 255, cv2.THRESH_OTSU)
 
-        cv2.imwrite('../examples/16 stages/thresh.jpg', thresh)
+        cv2.imwrite('../examples/16stages/thresh.jpg', thresh)
         # Apply Hough Transform
         lines = cv2.HoughLines(thresh, 1, np.pi / 180, 200)
 
@@ -132,7 +132,7 @@ def initial_approx(image):
             y2 = int(y0 - 1000 * (a))
             cv2.line(cimg, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
-        cv2.imwrite('../examples/16 stages/lines2.jpg', cimg)
+        cv2.imwrite('../examples/16stages/lines2.jpg', cimg)
 
         # average of theta values from Hough Transform
         # print(lines[:, 0][:, 1])  # for debug

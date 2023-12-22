@@ -75,3 +75,34 @@ Note: algorithm automatically resizes the matrix to fit at least 95% of the dist
 <div align="center">
     <img src="processed/kernel_visualization/infographics_kernel.png">
 </div>
+
+## Automatic Rotation
+
+### Original
+<div align="center">
+    <img src="examples/16.jpg">
+</div>
+
+### First Stage: Pre-Processing, Angle Approximation
+
+<div align="center">
+    <img src="examples/16.jpg">
+    <img src="examples/16stages/binary_edition.jpg">
+    <img src="examples/16stages/blurred_edition.jpg">
+    <img src="examples/16stages/thresh.jpg">
+</div>
+
+### Second Stage: Enhanced Processing and Angle Approximation
+
+<div align="center">
+    <img src="examples/16stages/blurred_edition2.jpg">
+    <img src="examples/16stages/thresh.jpg">
+</div>
+
+### Final Result: Locate Lines, Find Angle and Rotate
+<div align="center">
+    <img src="examples/16stages/lines2.jpg">
+    <img src="examples/16p.jpg">
+</div>
+
+Find additional examples in the `examples` folder (`16.jpg` is original, `16p.jpg` is processed)

@@ -83,7 +83,7 @@ def convert_to_binary_and_save(image):  # EXAMPLE: T7
     # To binary
     _, binary = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
 
-    cv2.imwrite('../examples/16 stages/binary_edition.jpg', binary)
+    cv2.imwrite('../examples/16stages/binary_edition.jpg', binary)
     return binary
 
 
