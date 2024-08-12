@@ -1,30 +1,23 @@
 from sys import argv
 from time import process_time, time
 import argparse
+import cv2
+import numpy as np
+
+from tools import *
 
 # Time
 start = time()
 cpu_start = process_time()
 
-# Read
-path = argv[1]
-mode = argv[2]
-try:
-	parameter = argv[3]
-except IndexError:
-	parameter = None
 
-try:
-	name = argv[4]
-except IndexError:
-	name = None
-
-# Load
-img = cv2.imread(path, cv2.IMREAD_UNCHANGED)  # cv2.IMREAD_UNCHANGED keeps the alpha channel, instead of removing it
-try:
-	height, width, channels = img.shape
-except ValueError:
-	height, width, channels = img.shape + tuple([1])
+def load(path):
+	global img, height, width, channels
+	img = cv2.imread(path, cv2.IMREAD_UNCHANGED)  # cv2.IMREAD_UNCHANGED keeps the alpha channel, instead of removing it
+	try:
+		height, width, channels = img.shape
+	except ValueError:
+		height, width, channels = img.shape + tuple([1])
 
 
 def inverse():
@@ -53,6 +46,23 @@ def test():
 def main():
 	global parameter
 	param = lambda x: float(parameter) if parameter is not None else x
+
+	# argument parsing via argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--input", help="Path to the input image")
+	parser.add_argument("--output", default=None, help="Path to the output folder")
+	parser.add_argument("--mode", help="Processing mode")
+	parser.add_argument("--parameter", help="Parameter for the processing mode")
+
+	args = parser.parse_args()
+
+	mode = args.mode
+	parameter = args.parameter
+	path = args.input
+	output = args.output
+
+	load(path)
+
 	match mode[2:]:
 		case "grayscale" | "gray":
 			p = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
@@ -73,11 +83,10 @@ def main():
 			print("Invalid Mode")
 			return
 
-	save_filename =  f"{mode[2:]}_{path.split('/')[-1]}"
-	if name is not None:
-		save_filename = name
+	if output is None:
+		output = f"{mode[2:]}_{path.split('/')[-1]}"
 
-	cv2.imwrite(save_filename, p)
+	cv2.imwrite(output, p)
 
 
 
