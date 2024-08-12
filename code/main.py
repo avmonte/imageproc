@@ -49,10 +49,10 @@ def main():
 
 	# argument parsing via argparse
 	parser = argparse.ArgumentParser()
-	parser.add_argument("--input", help="Path to the input image")
-	parser.add_argument("--output", default=None, help="Path to the output folder")
-	parser.add_argument("--mode", help="Processing mode")
+	parser.add_argument("mode", help="Processing mode")
 	parser.add_argument("--parameter", help="Parameter for the processing mode")
+	parser.add_argument("input", help="Path to the input image")
+	parser.add_argument("--output", default=None, help="Path to the output folder")
 
 	args = parser.parse_args()
 
@@ -63,7 +63,7 @@ def main():
 
 	load(path)
 
-	match mode[2:]:
+	match mode:
 		case "grayscale" | "gray":
 			p = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 		case "inverse":

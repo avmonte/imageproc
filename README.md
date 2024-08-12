@@ -23,7 +23,7 @@ License: see above
 In a terminal window of a directory with your image file, type
 ```bash
 
-python3 code/main.py --input [inputFilePath] --mode [mode] --parameter [parameter_OPTIONAL] --output [saveFilename_OPTIONAL]
+python3 code/main.py [mode] [inputFilePath] --parameter [parameter_OPTIONAL] --output [saveFilename_OPTIONAL]
 
 ```
 both *.png* and *.jpg* files are supported
