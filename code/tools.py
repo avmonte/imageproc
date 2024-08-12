@@ -159,3 +159,4 @@ def fast_convolve(image: np.ndarray, kernel: Kernel):
 			final[i, j] = abs(total * kernel.coef)
 
 	return final
+

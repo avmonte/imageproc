@@ -1,5 +1,6 @@
 from sys import argv
-from time import process_time
+from time import process_time, time
+import argparse
 
 # Time
 start = time()
